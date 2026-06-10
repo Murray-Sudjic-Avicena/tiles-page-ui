@@ -1,0 +1,307 @@
+/* ── Global reset for this app ─────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background: #f4f4f4;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border: none;
+  text-align: left;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header / Navigation ───────────────────────────────────────────── */
+.app-header {
+  background: #1a2535;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 54px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.header-logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: white;
+}
+
+.header-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.header-nav-item {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 12px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+}
+
+.header-nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header-nav-item--user {
+  gap: 6px;
+}
+
+/* ── Page layout ───────────────────────────────────────────────────── */
+.tile-page-content {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  background: white;
+  flex: 1;
+}
+
+/* ── Toolbar ───────────────────────────────────────────────────────── */
+.tile-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dde2ea;
+  margin-bottom: 12px;
+}
+
+.toolbar-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: white;
+  transition: filter 0.15s;
+}
+
+.toolbar-btn:hover {
+  filter: brightness(1.1);
+}
+
+.toolbar-btn--fab {
+  background: #5a8fa0;
+}
+
+.toolbar-btn--mapping {
+  background: #4472c4;
+}
+
+.toolbar-btn--add {
+  background: #3a7dc9;
+}
+
+/* ── Search box ────────────────────────────────────────────────────── */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  margin-bottom: 10px;
+}
+
+.search-box label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+.search-box input {
+  padding: 6px 10px;
+  border: 1px solid #b0b8c5;
+  border-radius: 3px;
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: #4472c4;
+  box-shadow: 0 0 0 2px rgba(68, 114, 196, 0.2);
+}
+
+/* ── Table ─────────────────────────────────────────────────────────── */
+.tile-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tile-table-header-row {
+  background: #1d3461;
+}
+
+.tile-table-header-cell {
+  color: white;
+  padding: 11px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tile-table-header-cell:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sort-arrow {
+  margin-left: 5px;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.sort-arrow--active {
+  opacity: 1;
+}
+
+/* ── Table rows ────────────────────────────────────────────────────── */
+.tile-row {
+  border-bottom: 1px solid #e8ebf0;
+}
+
+.tile-row:hover {
+  background: #f0f5ff;
+}
+
+.tile-cell {
+  padding: 9px 16px;
+  font-size: 13px;
+  color: #444;
+}
+
+.tile-id {
+  color: #1a5fa8;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tile-id:hover {
+  text-decoration: underline;
+}
+
+/* ── Action buttons ────────────────────────────────────────────────── */
+.action-btn {
+  background: none;
+  border: 1px solid #c0cad8;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #3a6ea8;
+  padding: 3px 6px;
+  margin: 0 2px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+
+.action-btn:hover {
+  background: #e8f0fe;
+}
+
+/* ── Pagination ────────────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 0;
+  font-size: 13px;
+  border-top: 1px solid #e8ebf0;
+  margin-top: 2px;
+}
+
+.pagination-entries {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+}
+
+.pagination-select {
+  padding: 3px 6px;
+  border: 1px solid #b0b8c5;
+  border-radius: 3px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.page-btn {
+  padding: 4px 10px;
+  border: 1px solid #c0cad8;
+  background: white;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 13px;
+  color: #333;
+  transition: background 0.12s;
+  min-width: 32px;
+  text-align: center;
+}
+
+.page-btn:hover:not(:disabled):not(.page-btn--active) {
+  background: #f0f2f5;
+}
+
+.page-btn--active {
+  background: #4472c4;
+  color: white;
+  border-color: #4472c4;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ── SVG icon sizing ───────────────────────────────────────────────── */
+.icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
