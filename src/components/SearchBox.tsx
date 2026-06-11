@@ -1,3 +1,5 @@
+// Props sent down from TilePage components
+
 interface Props {
   value: string;
   onChange: (value: string) => void;

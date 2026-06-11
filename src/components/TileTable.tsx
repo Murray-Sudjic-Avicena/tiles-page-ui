@@ -20,7 +20,7 @@ export default function TileTable({ tiles, sortConfig, onSort }: Props) {
   return (
     <table className="tile-table">
       <thead>
-        <TileCategoryRow sortConfig={sortConfig} onSort={onSort} />
+        <TileCategoryRow sortConfig={sortConfig} onSort={onSort} /> {/* props sent to child components*/}
       </thead>
       <tbody>
         {tiles.length === 0 ? (
