@@ -1,10 +1,12 @@
-// Dummy button
+interface Props {
+  onClick: () => void;
+}
 
-export default function AddTileButton() {
+export default function AddTileButton({ onClick }: Props) {
   return (
     <button
       className="toolbar-btn toolbar-btn--add"
-      onClick={() => alert('Add New Tile clicked')}
+      onClick={onClick}
     >
       Add New
     </button>

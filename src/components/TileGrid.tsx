@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useCallback, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import type {
   ColDef,
@@ -14,17 +14,28 @@ import { gridTheme } from '../theme/gridTheme';
 
 const BLOCK_SIZE = 100;
 
+// Passed to the grid as `context` so cell renderers can reach the row actions.
+interface GridContext {
+  onEditTile: (tile: Tile) => void;
+  onDeleteTile: (tile: Tile) => void;
+}
+
+// Imperative handle exposed to the parent (e.g. to refetch after a mutation).
+export interface TileGridHandle {
+  refresh: () => void;
+}
+
 function TileIdRenderer({ value }: ICellRendererParams<Tile>) {
   return <span className="tile-id">{value}</span>;
 }
 
-function ActionCellRenderer({ data }: ICellRendererParams<Tile>) {
+function ActionCellRenderer({ data, context }: ICellRendererParams<Tile, unknown, GridContext>) {
   if (!data) return null;
   return (
     <span style={{ display: 'flex', gap: 4, alignItems: 'center', height: '100%' }}>
       <button
         className="action-btn"
-        onClick={() => alert(`Edit tile: ${data.tileId}`)}
+        onClick={() => context.onEditTile(data)}
         title="Edit"
       >
         <svg style={{ width: 14, height: 14, stroke: 'currentColor', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', verticalAlign: 'middle' }} viewBox="0 0 24 24" aria-hidden>
@@ -34,7 +45,7 @@ function ActionCellRenderer({ data }: ICellRendererParams<Tile>) {
       </button>
       <button
         className="action-btn"
-        onClick={() => alert(`Delete tile: ${data.tileId}`)}
+        onClick={() => context.onDeleteTile(data)}
         title="Delete"
       >
         <svg style={{ width: 14, height: 14, stroke: 'currentColor', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', verticalAlign: 'middle' }} viewBox="0 0 24 24" aria-hidden>
@@ -50,14 +61,28 @@ function ActionCellRenderer({ data }: ICellRendererParams<Tile>) {
 
 interface Props {
   search: string;
+  onEditTile: (tile: Tile) => void;
+  onDeleteTile: (tile: Tile) => void;
 }
 
-export default function TileGrid({ search }: Props) {
+const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid(
+  { search, onEditTile, onDeleteTile },
+  ref,
+) {
   const gridApiRef = useRef<GridApi<Tile> | null>(null);
   // Keep the latest search in a ref so the datasource always reads the current
   // value without having to be recreated on every keystroke.
   const searchRef = useRef(search);
   searchRef.current = search;
+
+  // Latest action callbacks, read via grid context (which we set once).
+  const contextRef = useRef<GridContext>({ onEditTile, onDeleteTile });
+  contextRef.current = { onEditTile, onDeleteTile };
+
+  // Let the parent refetch the grid after add/edit/delete.
+  useImperativeHandle(ref, () => ({
+    refresh: () => gridApiRef.current?.purgeInfiniteCache(),
+  }), []);
 
   const colDefs = useMemo<ColDef<Tile>[]>(() => [
     { field: 'type',   headerName: 'Type',    flex: 2,   filter: 'agTextColumnFilter' },
@@ -112,7 +137,8 @@ export default function TileGrid({ search }: Props) {
         defaultColDef={{ sortable: true, resizable: true, unSortIcon: true, filter: true }}
         rowModelType="infinite"
         datasource={datasource}
-        cacheBlockSize={BLOCK_SIZE}
+        cacheBlockSize={BLOCK_SIZE} //Specifies how many rows the grid requests per fetch
+        context={contextRef.current}
         onGridReady={onGridReady}
         suppressDragLeaveHidesColumns
         suppressCellFocus
@@ -120,4 +146,6 @@ export default function TileGrid({ search }: Props) {
       />
     </div>
   );
-}
+});
+
+export default TileGrid;
