@@ -159,24 +159,21 @@
   box-shadow: 0 0 0 2px rgba(10, 91, 211, 0.18);
 }
 
-/* ── AG Grid internal: collapse viewport to actual rows, floor at 1 row */
-.tile-grid-wrapper .ag-body-viewport,
-.tile-grid-wrapper .ag-center-cols-viewport {
-  min-height: 42px !important;
-}
-
-.tile-grid-wrapper .ag-center-cols-container {
-  min-height: 0 !important;
-}
-
 /* ── AG Grid wrapper ────────────────────────────────────────────────── */
+/* Infinite scroll needs a definite height so the grid can virtualise rows and
+   scroll internally. flex:1 fills the remaining space in the page column. */
 .tile-grid-wrapper {
+  flex: 1;
   min-height: 0;
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow);
   background: var(--panel);
+}
+
+.tile-grid-wrapper .ag-root-wrapper {
+  height: 100%;
 }
 
 /* ── Tile ID link style (used inside AG Grid cell renderer) ─────────── */
@@ -219,63 +216,3 @@
   background: var(--accent-light);
 }
 
-/* ── Grid loading overlay ───────────────────────────────────────────── */
-.grid-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.55);
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* ── Pagination bar ─────────────────────────────────────────────────── */
-.pagination-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 4px 0;
-  flex-shrink: 0;
-}
-
-.pagination-btn {
-  padding: 5px 14px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--panel);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.12s;
-}
-
-.pagination-btn:hover:not(:disabled) {
-  background: var(--accent-light);
-}
-
-.pagination-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.pagination-info {
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-.pagination-total {
-  color: var(--text-muted);
-  font-weight: 400;
-}
-
-.pagination-size {
-  margin-left: auto;
-  padding: 5px 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text);
-  background: var(--panel);
-  cursor: pointer;
-}

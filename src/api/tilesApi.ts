@@ -1,39 +1,40 @@
-// 'Bridge' to Backend/API. Sends HTTP requests to API endpoint at 'http://localhost:8000/api'. Returns the data to construct tile table
+// 'Bridge' to Backend/API. Sends a block request to the API endpoint at
+// 'http://localhost:8000/api' and returns one block of rows for AG Grid's
+// infinite row model. The grid asks for rows by range (startRow/endRow) and
+// the backend does all sorting + filtering against the database.
 
-import type { Tile, SortField, SortDirection } from '../types/Tile';
+import type { Tile } from '../types/Tile';
 
-export interface TileQueryParams {
-  page: number;
-  pageSize: number;
-  sortField?: SortField;
-  sortDir?: SortDirection;
+export interface SortModelItem {
+  colId: string;
+  sort: 'asc' | 'desc';
+}
+
+// Shape the grid sends per block. filterModel is AG Grid's per-column filter
+// state, passed through to the backend verbatim.
+export interface TileQueryRequest {
+  startRow: number;
+  endRow: number;
+  sortModel: SortModelItem[];
+  filterModel: Record<string, unknown>;
   search?: string;
 }
 
-export interface PagedTileResponse {
-  tiles: Tile[];
-  total: number;
-  page: number;
-  page_size: number;
+export interface TileBlockResponse {
+  rows: Tile[];
+  lastRow: number; // total matching rows, lets the grid size its scrollbar
 }
 
-// api URL
 const BASE_URL = 'http://localhost:8000/api';
 
-// input: Takes a TileQueryParams object
-// output: PageTileResponse, wrapped in a Promise - i.e, caller waits for HTTP body to return
-
-export async function fetchTiles(params: TileQueryParams): Promise<PagedTileResponse> {
-  // builds query string (sortfield,... only added if they have values)
-  const qs = new URLSearchParams({
-    page: String(params.page),
-    page_size: String(params.pageSize),
+// input: a TileQueryRequest describing the block + sort/filter state
+// output: TileBlockResponse, wrapped in a Promise
+export async function queryTiles(req: TileQueryRequest): Promise<TileBlockResponse> {
+  const res = await fetch(`${BASE_URL}/tiles/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
   });
-  if (params.sortField) qs.set('sort_field', params.sortField);
-  if (params.sortDir)   qs.set('sort_dir', params.sortDir);
-  if (params.search)    qs.set('search', params.search);
-  // Calls the api using browsers built-in fetch, appending query string to base URL
-  const res = await fetch(`${BASE_URL}/tiles?${qs}`);
   if (!res.ok) throw new Error(`Tiles API error: ${res.status}`);
-  return res.json() as Promise<PagedTileResponse>; 
+  return res.json() as Promise<TileBlockResponse>;
 }

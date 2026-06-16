@@ -1,8 +1,18 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useRef, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import type { ColDef, ICellRendererParams, SortChangedEvent } from 'ag-grid-community';
-import type { Tile, SortField, SortDirection } from '../types/Tile';
+import type {
+  ColDef,
+  ICellRendererParams,
+  GridApi,
+  GridReadyEvent,
+  IDatasource,
+  IGetRowsParams,
+} from 'ag-grid-community';
+import type { Tile } from '../types/Tile';
+import { queryTiles } from '../api/tilesApi';
 import { gridTheme } from '../theme/gridTheme';
+
+const BLOCK_SIZE = 100;
 
 function TileIdRenderer({ value }: ICellRendererParams<Tile>) {
   return <span className="tile-id">{value}</span>;
@@ -39,19 +49,23 @@ function ActionCellRenderer({ data }: ICellRendererParams<Tile>) {
 }
 
 interface Props {
-  tiles: Tile[];
-  loading: boolean;
-  onSortChange: (field?: SortField, dir?: SortDirection) => void;
+  search: string;
 }
 
-export default function TileGrid({ tiles, loading, onSortChange }: Props) {
+export default function TileGrid({ search }: Props) {
+  const gridApiRef = useRef<GridApi<Tile> | null>(null);
+  // Keep the latest search in a ref so the datasource always reads the current
+  // value without having to be recreated on every keystroke.
+  const searchRef = useRef(search);
+  searchRef.current = search;
+
   const colDefs = useMemo<ColDef<Tile>[]>(() => [
-    { field: 'type',   headerName: 'Type',    flex: 2 },
-    { field: 'wafer',  headerName: 'Wafer',   flex: 1 },
-    { field: 'row',    headerName: 'Row',     flex: 1, type: 'numericColumn' },
-    { field: 'column', headerName: 'Column',  flex: 1, type: 'numericColumn' },
-    { field: 'tileId', headerName: 'Tile ID', flex: 1.5, cellRenderer: TileIdRenderer },
-    { field: 'grade',  headerName: 'Grade',   flex: 1 },
+    { field: 'type',   headerName: 'Type',    flex: 2,   filter: 'agTextColumnFilter' },
+    { field: 'wafer',  headerName: 'Wafer',   flex: 1,   filter: 'agTextColumnFilter' },
+    { field: 'row',    headerName: 'Row',     flex: 1,   type: 'numericColumn', filter: 'agNumberColumnFilter' },
+    { field: 'column', headerName: 'Column',  flex: 1,   type: 'numericColumn', filter: 'agNumberColumnFilter' },
+    { field: 'tileId', headerName: 'Tile ID', flex: 1.5, cellRenderer: TileIdRenderer, filter: 'agTextColumnFilter' },
+    { field: 'grade',  headerName: 'Grade',   flex: 1,   filter: 'agTextColumnFilter' },
     {
       headerName: 'Actions',
       flex: 1.5,
@@ -61,26 +75,47 @@ export default function TileGrid({ tiles, loading, onSortChange }: Props) {
     },
   ], []);
 
-  const handleSortChanged = useCallback((event: SortChangedEvent<Tile>) => {
-    const sorted = event.api.getColumnState().find((c) => c.sort != null);
-    onSortChange(
-      sorted?.colId as SortField | undefined,
-      sorted?.sort as SortDirection | undefined,
-    );
-  }, [onSortChange]);
+  // The datasource is how the grid asks us for rows. It fires whenever the grid
+  // needs a block — on first load, on scroll, and after sort/filter changes.
+  const datasource = useMemo<IDatasource>(() => ({
+    getRows: async (params: IGetRowsParams) => {
+      try {
+        const res = await queryTiles({
+          startRow: params.startRow,
+          endRow: params.endRow,
+          sortModel: params.sortModel.map((s) => ({ colId: s.colId, sort: s.sort })),
+          filterModel: params.filterModel ?? {},
+          search: searchRef.current || undefined,
+        });
+        params.successCallback(res.rows, res.lastRow);
+      } catch (err) {
+        console.error(err);
+        params.failCallback();
+      }
+    },
+  }), []);
+
+  const onGridReady = useCallback((e: GridReadyEvent<Tile>) => {
+    gridApiRef.current = e.api;
+  }, []);
+
+  // When the global search changes, drop cached blocks so they refetch.
+  useEffect(() => {
+    gridApiRef.current?.purgeInfiniteCache();
+  }, [search]);
 
   return (
-    <div className="tile-grid-wrapper" style={{ position: 'relative' }}>
-      {loading && <div className="grid-loading-overlay" />}
+    <div className="tile-grid-wrapper">
       <AgGridReact
         theme={gridTheme}
-        rowData={tiles}
         columnDefs={colDefs}
-        defaultColDef={{ sortable: true, resizable: true, unSortIcon: true }}
-        onSortChanged={handleSortChanged}
+        defaultColDef={{ sortable: true, resizable: true, unSortIcon: true, filter: true }}
+        rowModelType="infinite"
+        datasource={datasource}
+        cacheBlockSize={BLOCK_SIZE}
+        onGridReady={onGridReady}
         suppressDragLeaveHidesColumns
         suppressCellFocus
-        domLayout="autoHeight"
         animateRows={false}
       />
     </div>
