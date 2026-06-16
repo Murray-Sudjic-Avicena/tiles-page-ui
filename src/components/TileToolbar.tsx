@@ -5,9 +5,12 @@ import AddTileButton from './AddTileButton';
 export default function TileToolbar() {
   return (
     <div className="tile-toolbar">
-      <FabInspectionButton />
-      <AddDigitMappingButton />
-      <AddTileButton />
+      <h2 className="tile-toolbar-title">Tiles Summary</h2>
+      <div className="tile-toolbar-actions">
+        <FabInspectionButton />
+        <AddDigitMappingButton />
+        <AddTileButton />
+      </div>
     </div>
   );
 }

@@ -1,35 +1,35 @@
-── Global reset for this app ───────────────────────────────────────
-*, *::before, *::after {
-  box-sizing: border-box;
+/* ── PFM palette ────────────────────────────────────────────────────── */
+:root {
+  --bg: #f7f9fc;
+  --bg-secondary: #eef3fb;
+  --panel: #ffffff;
+  --text: #172b4d;
+  --text-muted: #5e6c84;
+  --border: #d7e0ec;
+  --accent: #0a5bd3;
+  --accent-light: #deebff;
+  --shadow: 0 10px 30px rgba(9, 30, 66, 0.08);
 }
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 14px;
-  color: #333;
-  background: #f4f4f4;
-}
-
-#root {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  border: none;
-  text-align: left;
-  min-height: 100svh;
+/* ── Page shell ─────────────────────────────────────────────────────── */
+.tile-page-shell {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
-/* ── Header / Navigation ───────────────────────────────────────────── */
+/* ── Header ─────────────────────────────────────────────────────────── */
 .app-header {
-  background: #1a2535;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  height: 54px;
-  color: white;
+  gap: 20px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #ffffff 15%, #0a4bb7 100%);
+  color: #fff;
+  box-shadow: var(--shadow);
   flex-shrink: 0;
 }
 
@@ -38,14 +38,7 @@ body {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: white;
-}
-
-.header-logo-text {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: white;
+  color: #fff;
 }
 
 .header-nav {
@@ -56,58 +49,66 @@ body {
 }
 
 .header-nav-item {
-  color: rgba(255, 255, 255, 0.9);
+  color: #fff;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 3px;
-  padding: 6px 12px;
-  border-radius: 3px;
+  padding: 8px 14px;
+  border-radius: 999px;
   text-transform: uppercase;
   background: none;
   border: none;
 }
 
 .header-nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.header-nav-item--user {
-  gap: 6px;
-}
-
-/* ── Page layout ───────────────────────────────────────────────────── */
+/* ── Content area ───────────────────────────────────────────────────── */
 .tile-page-content {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px 24px 40px;
-  background: white;
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  padding: 12px 16px 16px;
 }
 
-/* ── Toolbar ───────────────────────────────────────────────────────── */
+/* ── Toolbar ────────────────────────────────────────────────────────── */
 .tile-toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #dde2ea;
-  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.tile-toolbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.tile-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .toolbar-btn {
-  padding: 8px 18px;
+  padding: 7px 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  color: white;
+  color: #fff;
   transition: filter 0.15s;
 }
 
@@ -120,94 +121,67 @@ body {
 }
 
 .toolbar-btn--mapping {
-  background: #4472c4;
+  background: var(--accent);
 }
 
 .toolbar-btn--add {
   background: #3a7dc9;
 }
 
-/* ── Search box ────────────────────────────────────────────────────── */
+/* ── Search box ─────────────────────────────────────────────────────── */
 .search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .search-box label {
   font-size: 13px;
   font-weight: 500;
-  color: #444;
+  color: var(--text-muted);
 }
 
 .search-box input {
   padding: 6px 10px;
-  border: 1px solid #b0b8c5;
-  border-radius: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   font-size: 13px;
-  width: 220px;
+  width: 240px;
   outline: none;
+  color: var(--text);
+  background: var(--panel);
 }
 
 .search-box input:focus {
-  border-color: #4472c4;
-  box-shadow: 0 0 0 2px rgba(68, 114, 196, 0.2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(10, 91, 211, 0.18);
 }
 
-/* ── Table ─────────────────────────────────────────────────────────── */
-.tile-table {
-  width: 100%;
-  border-collapse: collapse;
+/* ── AG Grid internal: collapse viewport to actual rows, floor at 1 row */
+.tile-grid-wrapper .ag-body-viewport,
+.tile-grid-wrapper .ag-center-cols-viewport {
+  min-height: 42px !important;
 }
 
-.tile-table-header-row {
-  background: #1d3461;
+.tile-grid-wrapper .ag-center-cols-container {
+  min-height: 0 !important;
 }
 
-.tile-table-header-cell {
-  color: white;
-  padding: 11px 16px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-  user-select: none;
+/* ── AG Grid wrapper ────────────────────────────────────────────────── */
+.tile-grid-wrapper {
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--panel);
 }
 
-.tile-table-header-cell:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sort-arrow {
-  margin-left: 5px;
-  font-size: 11px;
-  opacity: 0.5;
-}
-
-.sort-arrow--active {
-  opacity: 1;
-}
-
-/* ── Table rows ────────────────────────────────────────────────────── */
-.tile-row {
-  border-bottom: 1px solid #e8ebf0;
-}
-
-.tile-row:hover {
-  background: #f0f5ff;
-}
-
-.tile-cell {
-  padding: 9px 16px;
-  font-size: 13px;
-  color: #444;
-}
-
+/* ── Tile ID link style (used inside AG Grid cell renderer) ─────────── */
 .tile-id {
-  color: #1a5fa8;
+  color: var(--accent);
   font-weight: 500;
   cursor: pointer;
 }
@@ -216,84 +190,7 @@ body {
   text-decoration: underline;
 }
 
-/* ── Action buttons ────────────────────────────────────────────────── */
-.action-btn {
-  background: none;
-  border: 1px solid #c0cad8;
-  border-radius: 3px;
-  cursor: pointer;
-  color: #3a6ea8;
-  padding: 3px 6px;
-  margin: 0 2px;
-  line-height: 1;
-  transition: background 0.12s;
-}
-
-.action-btn:hover {
-  background: #e8f0fe;
-}
-
-/* ── Pagination ────────────────────────────────────────────────────── */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 0 0;
-  font-size: 13px;
-  border-top: 1px solid #e8ebf0;
-  margin-top: 2px;
-}
-
-.pagination-entries {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #555;
-}
-
-.pagination-select {
-  padding: 3px 6px;
-  border: 1px solid #b0b8c5;
-  border-radius: 3px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-.page-btn {
-  padding: 4px 10px;
-  border: 1px solid #c0cad8;
-  background: white;
-  cursor: pointer;
-  border-radius: 3px;
-  font-size: 13px;
-  color: #333;
-  transition: background 0.12s;
-  min-width: 32px;
-  text-align: center;
-}
-
-.page-btn:hover:not(:disabled):not(.page-btn--active) {
-  background: #f0f2f5;
-}
-
-.page-btn--active {
-  background: #4472c4;
-  color: white;
-  border-color: #4472c4;
-}
-
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-/* ── SVG icon sizing ───────────────────────────────────────────────── */
+/* ── SVG icons ──────────────────────────────────────────────────────── */
 .icon {
   width: 14px;
   height: 14px;
@@ -304,4 +201,81 @@ body {
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* ── Action buttons (used inside AG Grid cell renderer) ─────────────── */
+.action-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--accent);
+  padding: 3px 6px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+
+.action-btn:hover {
+  background: var(--accent-light);
+}
+
+/* ── Grid loading overlay ───────────────────────────────────────────── */
+.grid-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.55);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ── Pagination bar ─────────────────────────────────────────────────── */
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px 0;
+  flex-shrink: 0;
+}
+
+.pagination-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--accent-light);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.pagination-total {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.pagination-size {
+  margin-left: auto;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel);
+  cursor: pointer;
 }

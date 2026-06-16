@@ -1,3 +1,5 @@
+// Dummy button
+
 export default function AddTileButton() {
   return (
     <button

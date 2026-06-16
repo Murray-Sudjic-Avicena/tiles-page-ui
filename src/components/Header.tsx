@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="app-header">
       <div className="header-logo">
-        <span className="header-logo-text">AVICENA</span>
+        <img src="/avicena.png" alt="Avicena" height={28} />
       </div>
 
       {/* // Navigation dummy buttons */}

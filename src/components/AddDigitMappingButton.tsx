@@ -1,3 +1,5 @@
+// Dummy button
+
 export default function AddDigitMappingButton() {
   return (
     <button
