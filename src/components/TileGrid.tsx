@@ -65,7 +65,7 @@ interface Props {
   onDeleteTile: (tile: Tile) => void;
 }
 
-const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid(
+const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid( //Reference, capability is in TilePage to call these functions
   { search, onEditTile, onDeleteTile },
   ref,
 ) {
@@ -79,9 +79,9 @@ const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid(
   const contextRef = useRef<GridContext>({ onEditTile, onDeleteTile });
   contextRef.current = { onEditTile, onDeleteTile };
 
-  // Let the parent refetch the grid after add/edit/delete.
+  // Function sent upwards - against convention, allows TilePage to refetch the grid after add/edit/delete.
   useImperativeHandle(ref, () => ({
-    refresh: () => gridApiRef.current?.purgeInfiniteCache(),
+    refresh: () => gridApiRef.current?.purgeInfiniteCache(), // purgeInfiniteCache deletes stale values
   }), []);
 
   const colDefs = useMemo<ColDef<Tile>[]>(() => [

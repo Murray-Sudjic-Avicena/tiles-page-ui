@@ -53,13 +53,13 @@ export default function TileFormModal({ tile, onClose, onSaved }: Props) {
     e.preventDefault();
     setError(null);
 
-    if (!form.type.trim() || !form.wafer.trim() || !form.tileId.trim()) {
+    if (!form.type.trim() || !form.wafer.trim() || !form.tileId.trim()) { //checks that the user has inputted a type, wafer and tileId
       setError('Type, Wafer and Tile ID are required.');
       return;
     }
     const row = Number(form.row);
     const column = Number(form.column);
-    if (!Number.isInteger(row) || !Number.isInteger(column)) {
+    if (!Number.isInteger(row) || !Number.isInteger(column)) { //checks that row and column are integers
       setError('Row and Column must be whole numbers.');
       return;
     }
