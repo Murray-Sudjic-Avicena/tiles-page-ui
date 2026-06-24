@@ -1,21 +1,14 @@
 import { useState, useEffect } from 'react';
 import type { Tile, Grade } from '../types/tile';
 import { createTile, updateTile, type TileInput } from '../api/tiles-api';
+import { emptyRow, describeRowErrors, rowToInput, type CellRow } from '../validation/tileValidation';
 
+// Grades offered by the dropdown. UI concern (the select's options), so it
+// stays local; the validation rules themselves live in tileValidation.
 const GRADES: Grade[] = ['A', 'B', 'C', 'n/a'];
 
-type FormState = {
-  type: string;
-  wafer: string;
-  row: string;    // kept as strings while editing; coerced to number on submit
-  column: string;
-  tileId: string;
-  grade: Grade;
-};
-
-const EMPTY: FormState = { type: '', wafer: '', row: '', column: '', tileId: '', grade: 'A' };
-
-function toFormState(tile: Tile): FormState {
+// The single-add form uses the same all-strings row shape as the bulk grid.
+function toFormState(tile: Tile): CellRow {
   return {
     type: tile.type,
     wafer: tile.wafer,
@@ -35,7 +28,9 @@ interface Props {
 
 export default function TileFormModal({ tile, onClose, onSaved }: Props) {
   const isEdit = tile != null;
-  const [form, setForm] = useState<FormState>(tile ? toFormState(tile) : EMPTY);
+  // New tiles default Grade to 'A' so the dropdown has a valid initial value
+  // (the shared emptyRow leaves grade blank, which the bulk grid fills by paste).
+  const [form, setForm] = useState<CellRow>(tile ? toFormState(tile) : { ...emptyRow(), grade: 'A' });
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -46,32 +41,20 @@ export default function TileFormModal({ tile, onClose, onSaved }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
+  const set = <K extends keyof CellRow>(key: K, value: CellRow[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    if (!form.type.trim() || !form.wafer.trim() || !form.tileId.trim()) { //checks that the user has inputted a type, wafer and tileId
-      setError('Type, Wafer and Tile ID are required.');
-      return;
-    }
-    const row = Number(form.row);
-    const column = Number(form.column);
-    if (!Number.isInteger(row) || !Number.isInteger(column)) { //checks that row and column are integers
-      setError('Row and Column must be whole numbers.');
+    const message = describeRowErrors(form);
+    if (message) {
+      setError(message);
       return;
     }
 
-    const input: TileInput = {
-      type: form.type.trim(),
-      wafer: form.wafer.trim(),
-      row,
-      column,
-      tileId: form.tileId.trim(),
-      grade: form.grade,
-    };
+    const input: TileInput = rowToInput(form);
 
     setSaving(true);
     try {
@@ -114,7 +97,7 @@ export default function TileFormModal({ tile, onClose, onSaved }: Props) {
           </label>
           <label className="form-field">
             <span>Grade</span>
-            <select value={form.grade} onChange={(e) => set('grade', e.target.value as Grade)}>
+            <select value={form.grade} onChange={(e) => set('grade', e.target.value)}>
               {GRADES.map((g) => <option key={g} value={g}>{g}</option>)}
             </select>
           </label>

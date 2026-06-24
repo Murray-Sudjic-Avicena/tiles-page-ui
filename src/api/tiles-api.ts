@@ -92,6 +92,13 @@ export async function createTile(_input: TileInput): Promise<Tile> {
   throw new Error('Create tile is not yet supported by the API.');
 }
 
+// Bulk-creates many tiles in one request. The real implementation will
+// POST `${BASE_URL}/tiles/bulk` with body { tiles: inputs } and map the
+// ApiTile[] response via mapTile (defined above).
+export async function bulkCreateTiles(_inputs: TileInput[]): Promise<Tile[]> {
+  throw new Error('Bulk create tiles is not yet supported by the API.');
+}
+
 export async function updateTile(_id: string, _input: TileInput): Promise<Tile> {
   throw new Error('Update tile is not yet supported by the API.');
 }

@@ -4,6 +4,7 @@ import TileToolbar from '../components/TileToolbar';
 import SearchBox from '../components/SearchBox';
 import TileGrid, { type TileGridHandle } from '../components/TileGrid';
 import TileFormModal from '../components/TileFormModal';
+import BulkAddTileModal from '../components/BulkAddTileModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { deleteTile } from '../api/tiles-api';
 import type { Tile } from '../types/tile';
@@ -16,6 +17,7 @@ export default function TilePage() {
   // Modal / dialog state. `formTile` distinguishes add (undefined) vs edit.
   const [formOpen, setFormOpen] = useState(false);
   const [formTile, setFormTile] = useState<Tile | undefined>(undefined);
+  const [bulkOpen, setBulkOpen] = useState(false);
   const [tileToDelete, setTileToDelete] = useState<Tile | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -33,6 +35,11 @@ export default function TilePage() {
 
   const handleSaved = () => {
     setFormOpen(false);
+    gridRef.current?.refresh();
+  };
+
+  const handleBulkSaved = () => {
+    setBulkOpen(false);
     gridRef.current?.refresh();
   };
 
@@ -54,7 +61,7 @@ export default function TilePage() {
     <div className="tile-page-shell">
       <Header />
       <div className="tile-page-content">
-        <TileToolbar onAddTile={openAdd} />
+        <TileToolbar onAddTile={openAdd} onBulkAdd={() => setBulkOpen(true)} />
         <SearchBox value={searchInput} onChange={setSearchInput} />
         <TileGrid
           ref={gridRef}
@@ -69,6 +76,13 @@ export default function TilePage() {
           tile={formTile}
           onClose={() => setFormOpen(false)}
           onSaved={handleSaved}
+        />
+      )}
+
+      {bulkOpen && (
+        <BulkAddTileModal
+          onClose={() => setBulkOpen(false)}
+          onSaved={handleBulkSaved}
         />
       )}
 
