@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Tile, Grade } from '../types/Tile';
-import { createTile, updateTile, type TileInput } from '../api/tilesApi';
+import type { Tile, Grade } from '../types/tile';
+import { createTile, updateTile, type TileInput } from '../api/tiles-api';
 
 const GRADES: Grade[] = ['A', 'B', 'C', 'n/a'];
 

@@ -8,9 +8,9 @@ import type {
   IDatasource,
   IGetRowsParams,
 } from 'ag-grid-community';
-import type { Tile } from '../types/Tile';
-import { queryTiles } from '../api/tilesApi';
-import { gridTheme } from '../theme/gridTheme';
+import type { Tile } from '../types/tile';
+import { queryTiles } from '../api/tiles-api';
+import { gridTheme } from '../theme/grid-theme';
 
 const BLOCK_SIZE = 100;
 

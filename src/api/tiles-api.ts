@@ -1,4 +1,4 @@
-import type { Tile, ApiTile, Grade } from '../types/Tile';
+import type { Tile, ApiTile, Grade } from '../types/tile';
 
 export interface SortModelItem {
   colId: string;

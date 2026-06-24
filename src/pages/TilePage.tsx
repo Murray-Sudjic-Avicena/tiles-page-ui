@@ -5,8 +5,8 @@ import SearchBox from '../components/SearchBox';
 import TileGrid, { type TileGridHandle } from '../components/TileGrid';
 import TileFormModal from '../components/TileFormModal';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { deleteTile } from '../api/tilesApi';
-import type { Tile } from '../types/Tile';
+import { deleteTile } from '../api/tiles-api';
+import type { Tile } from '../types/tile';
 import '../tiles.css';
 
 export default function TilePage() {
