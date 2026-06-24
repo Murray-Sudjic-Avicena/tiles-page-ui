@@ -143,6 +143,7 @@ const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid( //Referenc
         suppressDragLeaveHidesColumns
         suppressCellFocus
         animateRows={false}
+        pagination={true}
       />
     </div>
   );
