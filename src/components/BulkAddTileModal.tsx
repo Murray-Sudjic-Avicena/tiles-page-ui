@@ -43,29 +43,32 @@ export default function BulkAddTileModal({ onClose, onSaved }: Props) {
   // the single value into the focused input normally.
   const handlePaste = (rowIndex: number, e: React.ClipboardEvent) => {
     const text = e.clipboardData.getData('text');
-    if (!text.includes('\t') && !text.includes('\n')) return; // single cell: native paste
+    if (!text.includes('\t') && !text.includes('\n')) return; // have a single cell, so can use regular paste
 
     e.preventDefault();
+    // We must parse the text ourselves. parsed: string[][]
     const parsed = text
       .split(/\r?\n/)
       .filter((line) => line.trim() !== '')
       .map((line) => line.split('\t'));
 
     if (parsed.length === 0) return;
-
+    
+    // Creates list of CellRow objects to paste, filling in only the columns present in the data
     const pastedRows: CellRow[] = parsed.map((cells) => {
       const row = emptyRow();
-      COLUMNS.forEach((field, col) => {
-        if (cells[col] !== undefined) row[field] = cells[col];
+      COLUMNS.forEach((field, i) => {
+        if (cells[i] !== undefined) row[field] = cells[i];
       });
       return row;
     });
 
-    // Overwrite starting at the row that received the paste, growing as needed.
+    // Overwrite starting at the row that received the paste, growing as needed. 
+    // i.e., if there are already 3 rows in place, we paste from rowIndex onwards
     setRows((prev) => {
-      const next = [...prev];
-      pastedRows.forEach((r, i) => { next[rowIndex + i] = r; });
-      return next;
+      const updatedRows = [...prev];
+      pastedRows.forEach((row, i) => { updatedRows[rowIndex + i] = row; });
+      return updatedRows;
     });
   };
 

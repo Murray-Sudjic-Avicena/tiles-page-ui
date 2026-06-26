@@ -19,10 +19,11 @@ export const COLUMN_LABELS: Record<Field, string> = {
   grade: 'Grade',
 };
 
-// A row of free-text cells, kept as strings while editing (coerced on submit),
-// the same way the single-add form keeps row/column as strings.
+// A CellRow object will have one of the COLUMNS as a key, and the value is the string in that cell. 
+// All values are strings because they come from user input. (The row/column values will be coerced to numbers later.)
 export type CellRow = Record<Field, string>;
 
+// function that returns an empty row object with all fields empty.
 export const emptyRow = (): CellRow => ({ type: '', wafer: '', row: '', column: '', tileId: '', grade: '' });
 
 // Which fields of a given row are invalid. Empty set means the row is valid.
@@ -37,10 +38,10 @@ export function normalizeGrade(raw: string): Grade | null {
   return null;
 }
 
-// Same rules as TileFormModal, applied per cell:
-//  - type/wafer/tileId: required, non-empty after trim
-//  - row/column: must be integers
-//  - grade: must resolve to one of the allowed grades (free-pasted text, so we check)
+// Same rules as TileFormModal applied per cell:
+//  type/wafer/tileId: required, non-empty after trim
+//  row/column: must be integers
+//  grade: must resolve to one of the allowed grades
 export function validateRow(row: CellRow): RowErrors {
   const errors: RowErrors = {};
   if (!row.type.trim()) errors.type = true;

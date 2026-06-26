@@ -1,15 +1,8 @@
 import type { Tile, ApiTile, Grade } from '../types/tile';
 
-export interface SortModelItem {
-  colId: string;
-  sort: 'asc' | 'desc';
-}
-
 export interface TileQueryRequest {
   startRow: number;
   endRow: number;
-  sortModel: SortModelItem[];
-  filterModel: Record<string, unknown>;
   search?: string;
 }
 
@@ -17,16 +10,6 @@ export interface TileBlockResponse {
   rows: Tile[];
   lastRow: number; // -1 means total is unknown; a non-negative value signals the final page
 }
-
-// Maps a frontend column id to the API's field name for sort_by
-const COL_TO_API_FIELD: Record<string, string> = {
-  type:   'Tile_Type',
-  wafer:  'Wafer',
-  row:    'Tile_Row',
-  column: 'Tile_Column',
-  tileId: 'Tile_Identity',
-  grade:  'Grade',
-};
 
 const BASE_URL = '/api';
 
@@ -53,15 +36,6 @@ export async function queryTiles(req: TileQueryRequest): Promise<TileBlockRespon
     page:      String(page),
     page_size: String(blockSize),
   });
-
-  if (req.sortModel.length > 0) {
-    const s = req.sortModel[0];
-    const apiField = COL_TO_API_FIELD[s.colId];
-    if (apiField) {
-      params.set('sort_by',    apiField);
-      params.set('sort_order', s.sort);
-    }
-  }
 
   if (req.search) params.set('search', req.search);
 

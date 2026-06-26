@@ -108,8 +108,6 @@ const TileGrid = forwardRef<TileGridHandle, Props>(function TileGrid( //Referenc
         const res = await queryTiles({
           startRow: params.startRow,
           endRow: params.endRow,
-          sortModel: params.sortModel.map((s) => ({ colId: s.colId, sort: s.sort })),
-          filterModel: params.filterModel ?? {},
           search: searchRef.current || undefined,
         });
         params.successCallback(res.rows, res.lastRow);
