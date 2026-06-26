@@ -1,4 +1,5 @@
 import type { Tile, ApiTile, Grade } from '../types/tile';
+import { getAccessToken } from '../auth/getAccessToken';
 
 export interface TileQueryRequest {
   startRow: number;
@@ -39,7 +40,10 @@ export async function queryTiles(req: TileQueryRequest): Promise<TileBlockRespon
 
   if (req.search) params.set('search', req.search);
 
-  const res = await fetch(`${BASE_URL}/tiles?${params}`);
+  const token = await getAccessToken();
+  const res = await fetch(`${BASE_URL}/tiles?${params}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) throw new Error(`Tiles API error: ${res.status}`);
 
   const body = await res.json() as { page: number; page_size: number; data: ApiTile[] };
